@@ -1,4 +1,5 @@
 from mySocket import  MySocket
+import socket
 
 HOST = "netsec.unipr.it"  # The server's hostname or IP address
 PORT = 7022  # The port used by the server
@@ -7,18 +8,18 @@ p = 1717183979661295860112291519931784809019042025337056958695697601699205398080
 xc = 581653603720443212670038328865006257879554410432796221735023975689267215344537985570480348929339571200971269505146865970287397758935553477713134007735884
 
 def main():
-
     sock = MySocket()
     sock.connect_to_server(HOST, PORT)
 
     #Initiate handshake procedure
     sock.handshake(g, p, xc)
 
-    #Send message to server
-    sock.send_data_message('Test message')
-
     #Receive message from server
-    sock.receive_data_message()
+    sock.decrypt_data_message()
+
+    #Send message to server
+    sock.send_data_message('Message to server')
+
 
 if __name__ == "__main__":
     main()

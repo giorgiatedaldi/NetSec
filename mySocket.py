@@ -73,12 +73,18 @@ class MySocket:
         self._secret_key = dh_secret[-32:]
         print('Secret Key:\n', self._secret_key)
 
-    '''
-    def compute_signature(self):
+    def compute_signature(self, signature):
+
+        '''
+        Method to compute e verify the signature.
+        '''
+
         bytes_signature = hex(int(self._server_certificate_verify[1]))[2:]
         hashed = SHA256.new(bytes.fromhex(self._secret_key + bytes_signature)).hexdigest()
-        print('Signature:\n', hashed)
-    '''
+        if (hashed == signature):
+            print('Signature verified:\n', hashed)
+        else:
+            print('Invalid signature')
 
     def send_client_finished_message(self):
 
@@ -97,7 +103,7 @@ class MySocket:
         '''
         Method to execute the handshake procedure.
         '''
-
+        print('---------- HANDSHAKE ----------')
         self._g = g
         self._p = p
         self._xc = xc
@@ -105,20 +111,33 @@ class MySocket:
         self.send_hello_message()
         self.receive_server_hello_certificate_message()
         self.compute_secret_key()
-        #self.compute_signature()
+        self.compute_signature(self._server_finished[1])
         self.send_client_finished_message()
-
-    def receive_data_message(self):
+        print('------------------------------\n')
+    def receive_byte_from_server(self):
 
         '''
-        Method to receive the encrypted data from the server and decrypt it.
+        Method receive data from server.
         '''
 
         server_data = self.read_data_message().strip().split(' ')
         print('ServerData message:\n', server_data)
+        return server_data
+
+    def decrypt_data_message(self):
+
+        '''
+        Method decrypt data from server.
+        '''
+
+        print('---------- DECRYPT DATA ----------')
+        server_data = self.receive_byte_from_server()
+        #server_data = self.read_data_message().strip().split(' ')
+        #print('ServerData message:\n', server_data)
         AES_obj = AES128_CBC_PKCS5(self._secret_key)
         decrypted = AES_obj.decrypt(server_data[1])
         print('Decrypted message:\n', decrypted)
+        print('------------------------------\n')
 
     def send_data_message(self, msg):
 
@@ -126,12 +145,16 @@ class MySocket:
         Method to send the encrypted data to the server.
         '''
 
+        print('---------- SEND DATA ----------')
+        print('Message to send:\n', msg)
         AES_obj = AES128_CBC_PKCS5(self._secret_key)
         ciphertext = AES_obj.encrypt(msg)
         print('Encrypted message:\n', ciphertext)
         client_data = 'DATA' + ' ' + ciphertext + '\r\n'
         self.send_message(client_data)
         print('ClientData message:\n', client_data)
+        server_data = self.receive_byte_from_server()
+        print('------------------------------\n')
 
     def send_message(self, string_msg):
 
