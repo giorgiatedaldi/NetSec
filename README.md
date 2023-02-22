@@ -30,11 +30,6 @@ It is used by the client to send its DH public value Yc. The message format is:
 HELLO SP Yc CRLF
 - Yc = decimal integer representation of the DH public value
 
-# Authors
-- Giorgia Tedaldi: giorgia.tedaldi@studenti.unipr.it
-- Filippo D'Addeo: filippo.daddeo@studenti.unipr.it
-- Filippo Gessati: filippo.gessati@studenti.unipr.it
-
 ### ServerHello Message
 It is used by the client to send its DH public value Ys. The message format is:
 HELLO SP Ys CRLF
@@ -77,3 +72,8 @@ DATA SP Ciphertext64 CRLF
 It is sent by the server in case of an error (wrong message format, verification of the client MAC failed, error in decrypting a data messages, etc.).  The message format is:
 ERROR SP ErrorMessage CRLF 
 - ErrorMessage = textual message describing the error.
+
+# Authors
+- Giorgia Tedaldi: giorgia.tedaldi@studenti.unipr.it
+- Filippo D'Addeo: filippo.daddeo@studenti.unipr.it
+- Filippo Gessati: filippo.gessati@studenti.unipr.it
